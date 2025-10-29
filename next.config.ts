@@ -1,7 +1,13 @@
-import type { NextConfig } from "next";
+/** @type {import('next').NextConfig} */
+// next.config.js
+const nextConfig = {
+  images: {
+    remotePatterns: [{
+      protocol: 'https',
+      hostname: '**', // Разрешает любые домены
+    }],
+    unoptimized: true // Отключает оптимизацию Next.js
+  },
+}
 
-const nextConfig: NextConfig = {
-  /* config options here */
-};
-
-export default nextConfig;
+module.exports = nextConfig
