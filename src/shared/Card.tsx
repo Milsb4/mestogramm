@@ -1,5 +1,7 @@
 import Image from "next/image";
 import { CardData } from "./types";
+import { LikeButton } from "@/components/ui/Like-button/LikeButton";
+
 
 interface CardProps{
 card: CardData
@@ -10,22 +12,22 @@ export const Card:React.FC<CardProps> = ({card}) => {
     return(
         <li
         key={card.id}
-        className="h-[240px] w-[180px] cursor-pointer"
-        >
+        className="max-h-[240px] w-[180px] cursor-pointer"
+        >   
             <Image
-            alt={card.name}
-            src={card.image}
+            alt={card.title}
+            src={card.url}
             width={180}
             height={200}
-            className="pb-[2px] rounded-[4px]">    
+            className="pb-1 object-cover rounded-[4px]">    
             </Image>
             <div
-            className="bg-[#ffffff] rounded-[4px]">
+            className="flex p-2 justify-between bg-white rounded-[4px]">
                 <h3
-                className="text-[#000000] m-[0] p-[10px]"
-                >{card.name}</h3>
+                className="text-black font-inter-medium"
+                >{card.title}</h3>
+                <LikeButton/>
             </div>
-            
         </li>
     )
 }

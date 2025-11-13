@@ -9,7 +9,9 @@ export const Button = ({image}: ButtonProps) => {
     return(
        <button
        type="button"
-       className="mr-[20px] h-[50px] w-[150px] flex justify-center items-center bg-[#000000] cursor-pointer border border-solid border-[#ffffff]"
+        data-bs-toggle="modal" 
+        data-bs-target="#addPhoto"
+       className="mr-5 h-[50px] w-[150px] flex justify-center hover:opacity-60 items-center bg-black cursor-pointer border border-solid border-white"
        >
         <Image
         alt={image}

@@ -1,16 +1,10 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import BootstrapClient from '@/components/BootstrapClient';
+import { interRegular, interBlack, interMedium } from '../fonts'
 import "./globals.css";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+import { CardProvider } from "@/utils/context/CardContext";
+import { UserProvider } from "@/utils/context/UserContex";
 
 export const metadata: Metadata = {
   title: "Mestogram",
@@ -23,12 +17,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ru">
-
+    <html lang="ru" className={`${interRegular.variable} ${interBlack.variable} ${interMedium.variable}`}>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} bg-[#0gfg44] antialiased`}
+       className={interRegular.className}
       >
-        {children}
+         <UserProvider>
+          {children}
+          <BootstrapClient />
+        </UserProvider>
       </body>
     </html>
   );

@@ -1,8 +1,7 @@
 export interface CardData{
     id: string;
-    image: string;
-    name: string;
-    descreption: string
+    url: string;
+    title: string;
 }
 
 export type Card = CardData[];
