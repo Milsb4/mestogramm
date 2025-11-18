@@ -15,7 +15,6 @@ const changeProfileInfo = (newName, newProf) => {
       name: newName,
       profession: newProf
     });
-    console.log(profileInfo.name, profileInfo.profession)
 }
 
 const value = {

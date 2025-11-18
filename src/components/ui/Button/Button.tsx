@@ -4,7 +4,6 @@ type ButtonProps = {
    image: string 
 }
 
-
 export const Button = ({image}: ButtonProps) => {
     return(
        <button

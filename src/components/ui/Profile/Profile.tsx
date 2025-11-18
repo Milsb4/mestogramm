@@ -4,7 +4,7 @@ import Link from "next/link";
 import avatar from "@/public/avatar.jpg";
 import edit from "@/public/edit-icon.svg";
 import Image from "next/image";
-import {useUserContext } from "@/utils/context/UserContex";
+import {useUserContext } from "@/utils/context/UserContext";
 
 export const Profile = () => {
   const { profileInfo } = useUserContext();
