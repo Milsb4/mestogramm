@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import "bootstrap/dist/css/bootstrap.min.css";
 import BootstrapClient from "@/components/BootstrapClient";
 import { interRegular, interBlack, interMedium } from "../fonts";
-import icon from "@/public/icon.svg";
+import icon from "../../public/icon.svg";
 import "./globals.css";
 
 import { UserProvider } from "@/utils/context/UserContext";

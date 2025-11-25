@@ -1,6 +1,6 @@
 import { Profile } from "../../ui/Profile/Profile";
 import { Button } from "../../ui/Button/Button";
-import addIcon from '@//public/add-icon.svg';
+import addIcon from '../../../../public/add-icon.svg';
 import AddModalPhoto from "@/components/forms/AddModalPhoto/AddModalPhoto";
 import { UserProvider } from '@/utils/context/UserContext'
 

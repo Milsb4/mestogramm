@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Stocks } from "./stocks/page";
 import Image from "next/image";
-import logo from '@/public/logo.svg';
+import logo from '../../public/logo.svg';
 
 export default function Home() {
   return (

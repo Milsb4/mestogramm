@@ -1,7 +1,7 @@
 'use client'
 
 import Image from "next/image";
-import avatar from "@/public/avatar.jpg";
+import avatar from "../../../public/avatar.jpg";
 import Link from "next/link";
 import { Footer } from "@/components/layout/footer/Footer";
 import { useUserContext } from "@/utils/context/UserContext";
@@ -37,7 +37,7 @@ export default function ProfilePage() {
       
     } catch (error) {
       console.error('Ошибка при обновлении профиля:', error);
-      alert('Ошибка при сохранении');
+      console.log('Ошибка при сохранении');
     } finally {
       setIsLoading(false);
     }

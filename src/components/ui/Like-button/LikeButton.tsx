@@ -1,8 +1,8 @@
 import React from 'react'
 import { useState } from 'react'
 import Image from "next/image";
-import likeActive from '@/public/like-active.svg';
-import likeInactive from '@/public/like-inactive.svg';
+import likeActive from '../../../../public/like-active.svg';
+import likeInactive from '../../../../public/like-inactive.svg';
 
 export const LikeButton = () => {
   const [isLiked, setIsLiked] = useState(false)

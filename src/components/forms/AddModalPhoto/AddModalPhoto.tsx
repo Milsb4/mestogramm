@@ -16,7 +16,7 @@ export default function AddModalPhoto() {
 
 
   return (
-    <div className="p-8">
+    <div className="">
     
       {/* Модальное окно */}
       <div className="modal fade" id="addPhoto" tabIndex={-1}>
