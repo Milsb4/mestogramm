@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import avatar from "../../../../public/avatar.jpg";
-import edit from "../../../../public/edit-icon.svg";
+import edit from "../../../../public/edit-icon-black.svg";
 import Image from "next/image";
 import { useUserContext } from "@/utils/context/UserContext";
 
@@ -33,11 +33,6 @@ export const Profile = () => {
               {profileInfo.profession}
             </span>
           )}
-        </div>
-        
-        <div className="flex items-center gap-4 text-gray-600">
-          <span className="text-sm">📍 Москва</span>
-          <span className="text-sm">👥 12 подписчиков</span>
         </div>
         
         <div className="flex gap-6 mt-3 pt-3 border-t border-gray-100">

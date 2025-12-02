@@ -14,6 +14,7 @@ interface CardProps {
 export const Card: React.FC<CardProps> = ({ card, onAddComment, onDeleteComment }) => {
   const [showModal, setShowModal] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
+  
 
   const handleAddComment = (commentText: string) => {
     onAddComment(card.id, commentText);
@@ -62,13 +63,11 @@ export const Card: React.FC<CardProps> = ({ card, onAddComment, onDeleteComment 
             </div>
           )}
 
-          {/* Бейдж с количеством комментариев */}
-          {(card.comments && card.comments.length > 0) && (
-            <span className="absolute top-2 right-2 bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-medium shadow-sm z-10">
-              {card.comments.length}
-            </span>
-          )}
-
+        {card.comments?.length > 0 && (
+  <span className="absolute top-2 right-2 bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-medium shadow-sm z-10">
+    {card.comments.length}
+  </span>
+)}
         </div>
 
         {/* Нижняя часть карточки с заголовком и лайком */}

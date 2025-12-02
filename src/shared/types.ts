@@ -2,7 +2,7 @@ export interface Comment {
   id: string;
   text: string;
   createdAt: Date;
-  ownerCommmentID: string;
+  ownerCommentID: string;
 }
 
 export interface CardData {

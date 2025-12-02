@@ -34,7 +34,7 @@ const generateRandomComments = () => {
       id: `comment-${Math.random().toString(36).substr(2, 9)}`,
       text: randomComment,
       createdAt: new Date(Date.now() - Math.floor(Math.random() * 10000000000)),
-      ownerCommmentID: getRandomOwnerId()
+      ownerCommentID: getRandomOwnerId()
     });
   }
   
