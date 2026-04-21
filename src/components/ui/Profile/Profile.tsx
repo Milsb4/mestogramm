@@ -5,19 +5,21 @@ import avatar from "../../../../public/avatar.jpg";
 import edit from "../../../../public/edit-icon-black.svg";
 import Image from "next/image";
 import { useUserContext } from "@/utils/context/UserContext";
+import { useCardContext } from "@/utils/context/CardContext";
 
 export const Profile = () => {
-  const { profileInfo } = useUserContext();
+  const { profileInfo, isAuth } = useUserContext();
+  const { likedCardIds } = useCardContext();
   
   return (
     <div className="flex items-center gap-6 p-6 bg-white rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition-all duration-300 max-w-2xl ml-8">
-      <div className="relative group">
+      <div className="relative group w-[120px] h-[120px] rounded-full overflow-hidden border-4 border-gray-100 shadow-sm group-hover:border-blue-100 transition-all duration-300">
         <Image
           alt="Аватар"
-          src={avatar}
-          width={120}
-          height={120}
-          className="rounded-full object-cover border-4 border-gray-100 shadow-sm group-hover:border-blue-100 transition-all duration-300"
+          src={profileInfo.avatarUrl || avatar}
+          fill
+          sizes="120px"
+          className="object-cover"
         />
         <div className="absolute bottom-2 right-2 w-4 h-4 bg-green-500 border-2 border-white rounded-full"></div>
       </div>
@@ -37,15 +39,15 @@ export const Profile = () => {
         
         <div className="flex gap-6 mt-3 pt-3 border-t border-gray-100">
           <div className="text-center">
-            <div className="font-bold text-gray-900">24</div>
+            <div className="font-bold text-gray-900">{profileInfo.cardsCount ?? 0}</div>
             <div className="text-xs text-gray-500">Публикации</div>
           </div>
           <div className="text-center">
-            <div className="font-bold text-gray-900">156</div>
+            <div className="font-bold text-gray-900">{isAuth ? (likedCardIds?.length ?? 0) : 0}</div>
             <div className="text-xs text-gray-500">Лайки</div>
           </div>
           <div className="text-center">
-            <div className="font-bold text-gray-900">89</div>
+            <div className="font-bold text-gray-900">{profileInfo.commentsCount ?? 0}</div>
             <div className="text-xs text-gray-500">Комментарии</div>
           </div>
         </div>

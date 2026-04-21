@@ -1,9 +1,11 @@
 "use client";
 import { useCardContext } from "@/utils/context/CardContext";
 import { useState, useRef } from "react";
+import { useToast } from "@/components/ui/toast/ToastProvider";
 
 export default function AddModalPhoto() {
   const { addCard } = useCardContext();
+  const { showToast } = useToast();
   const [url, setUrl] = useState("");
   const [title, setTitle] = useState("");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -30,22 +32,26 @@ export default function AddModalPhoto() {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     // Используем временный URL если есть файл, иначе используем введенный URL
     const imageUrl = selectedFile ? url : url;
 
     if (title && (imageUrl || url)) {
-      addCard({ title, url: selectedFile ? url : url });
-      setTitle("");
-      setUrl("");
-      setSelectedFile(null);
-      setFileName("");
+      try {
+        await addCard({ title, url: selectedFile ? "" : url, file: selectedFile || undefined });
+        setTitle("");
+        setUrl("");
+        setSelectedFile(null);
+        setFileName("");
 
-      // Сбрасываем input file
-      if (fileInputRef.current) {
-        fileInputRef.current.value = "";
+        // Сбрасываем input file
+        if (fileInputRef.current) {
+          fileInputRef.current.value = "";
+        }
+      } catch (error: any) {
+        showToast(error?.message || "Чтобы добавить карточку, войдите в профиль", "error");
       }
     }
   };

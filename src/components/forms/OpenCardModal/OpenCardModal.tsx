@@ -1,12 +1,13 @@
 'use client';
 import { CardData } from "@/shared/types"; 
 import { useState, useEffect, useRef } from "react";
+import { useToast } from "@/components/ui/toast/ToastProvider";
 
 interface OpenCardModalProps {
   card: CardData;
   onClose: () => void;
-  onAddComment: (commentText: string) => void;
-  onDeleteComment?: (cardId: string, commentId: string) => void;
+  onAddComment: (commentText: string) => Promise<void>;
+  onDeleteComment?: (cardId: string, commentId: string) => Promise<void>;
 }
 
 export default function OpenCardModal({ 
@@ -15,20 +16,30 @@ export default function OpenCardModal({
   onAddComment,
   onDeleteComment 
 }: OpenCardModalProps) {
+  const { showToast } = useToast();
   const [commentText, setCommentText] = useState("");
+  const [modalImageSrc, setModalImageSrc] = useState(card.url);
   const commentsEndRef = useRef<HTMLDivElement>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (commentText.trim()) {
-      onAddComment(commentText.trim());
-      setCommentText("");
+      try {
+        await onAddComment(commentText.trim());
+        setCommentText("");
+      } catch (error: any) {
+        showToast(error?.message || "Чтобы добавить комментарий, войдите в профиль", "error");
+      }
     }
   };
 
-  const handleDeleteComment = (commentId: string) => {
+  const handleDeleteComment = async (commentId: string) => {
     if (onDeleteComment) {
-      onDeleteComment(card.id, commentId);
+      try {
+        await onDeleteComment(card.id, commentId);
+      } catch (error: any) {
+        showToast(error?.message || "Чтобы удалить комментарий, войдите в профиль", "error");
+      }
     }
   };
 
@@ -84,10 +95,13 @@ export default function OpenCardModal({
             {/* Изображение карточки */}
             <div className="text-center mb-4">
               <img 
-                src={card.url} 
+                src={modalImageSrc} 
                 alt={card.title}
                 className="img-fluid rounded"
                 style={{ maxHeight: "300px" }}
+                onError={() => {
+                  if (modalImageSrc !== "/avatar.jpg") setModalImageSrc("/avatar.jpg");
+                }}
               />
             </div>
 
@@ -106,7 +120,18 @@ export default function OpenCardModal({
                   card.comments.map((comment) => (
                     <div key={comment.id} className="mb-3 pb-3 border-bottom">
                       <div className="d-flex justify-content-between align-items-start">
-                        <p className="mb-1 flex-grow-1">{comment.text}</p>
+                        <div className="flex-grow-1">
+                          <div className="d-flex align-items-center gap-2 mb-1">
+                            <img
+                              src={comment.ownerAvatarUrl || "/avatar.jpg"}
+                              alt={comment.ownerName || "Автор"}
+                              className="rounded-full"
+                              style={{ width: "24px", height: "24px", objectFit: "cover" }}
+                            />
+                            <strong style={{ fontSize: "0.9rem" }}>{comment.ownerName || "Пользователь"}</strong>
+                          </div>
+                          <p className="mb-1">{comment.text}</p>
+                        </div>
                         <div className="d-flex align-items-center gap-2">
                           <small className="text-muted">
                             {formatDate(comment.createdAt)}

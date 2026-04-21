@@ -1,120 +1,139 @@
 "use client";
 
+import { useUserContext } from "@/utils/context/UserContext";
 import Link from "next/link";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function AuthPage() {
-  const [name, setName] = useState("");
-  const [prof, setProf] = useState("");
-  const [mail, setMail] = useState("");
+  const { login, register } = useUserContext();
+  const router = useRouter();
+  const [mode, setMode] = useState<"login" | "register">("login");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
+  const [profession, setProfession] = useState("");
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
-  const handleSubmit = (e: { preventDefault: () => void }) => {
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError("");
+    setSuccess("");
+
+    try {
+      if (mode === "login") {
+        await login(email, password);
+      } else {
+        if (!name.trim()) {
+          setError("Для регистрации укажи имя.");
+          return;
+        }
+        await register(email, password, name || "User", profession || "");
+      }
+      setSuccess("Успешно! Перенаправляю на главную...");
+      setTimeout(() => {
+        router.push("/");
+      }, 500);
+    } catch (err: any) {
+      const message = err.message || "Ошибка авторизации";
+      if (mode === "login" && message === "Invalid credentials") {
+        setError("Неверный email/пароль. Если аккаунта нет, переключитесь на регистрацию.");
+      } else {
+        setError(message);
+      }
+    }
   };
 
-  const hasChanges =
-    name.trim() !== "" &&
-    prof.trim() !== "" &&
-    mail.trim() !== "" &&
-    password.trim() !== "";
-
   return (
-    <article className="min-h-screen bg-[radial-gradient(circle,_white_0%,_gray_20%,_black_100%)]">
-      <div className="bg-white shadow-sm">
-        <div className="container mx-auto px-4 py-4">
-          <Link href="/">
-            <h1 className="text-4xl font-bold text-gray-800 hover:text-gray-600 transition-colors duration-200">
-              Mestogramm
-            </h1>
-          </Link>
-        </div>
-      </div>
-      <div className="max-w-md bg-white rounded-2xl shadow-xl overflow-hidden mt-4 m-auto">
-        <div className="p-8 bg-gray-100">
-          <div className="mb-8 text-center">
-            <h2 className="text-3xl font-bold text-gray-800 mb-2">
+    <main className="min-h-screen bg-[radial-gradient(circle,_white_0%,_gray_20%,_black_100%)]">
+      <div className="container mx-auto max-w-md px-4 py-10">
+        <Link href="/" className="text-white underline">
+          На главную
+        </Link>
+
+        <form onSubmit={onSubmit} className="mt-6 bg-white p-6 rounded-xl shadow">
+          <div className="grid grid-cols-2 gap-2 mb-4">
+            <button
+              type="button"
+              onClick={() => {
+                setMode("login");
+                setError("");
+                setSuccess("");
+              }}
+              className={`rounded p-2 text-sm ${
+                mode === "login" ? "bg-black text-white" : "bg-gray-100 text-gray-700"
+              }`}
+            >
+              Вход
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setMode("register");
+                setError("");
+                setSuccess("");
+              }}
+              className={`rounded p-2 text-sm ${
+                mode === "register" ? "bg-black text-white" : "bg-gray-100 text-gray-700"
+              }`}
+            >
               Регистрация
-            </h2>
-            <p className="text-gray-600">Создайте новый аккаунт</p>
+            </button>
           </div>
 
-          <form className="space-y-6" onChange={handleSubmit}>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Введите почту
-              </label>
-              <input
-                required
-                value={mail}
-                onChange={(e) => setMail(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 text-gray-800 placeholder-gray-400"
-              />
-            </div>
+          <h1 className="text-2xl font-bold mb-4">
+            {mode === "login" ? "Вход" : "Регистрация"}
+          </h1>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Введите пароль
-              </label>
+          {mode === "register" && (
+            <>
               <input
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 text-gray-800 placeholder-gray-400"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Повторите пароль
-              </label>
-              <input
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 text-gray-800 placeholder-gray-400"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Введите Ваше имя
-              </label>
-              <input
-                required
+                className="w-full border rounded p-2 mb-3 text-black placeholder:text-gray-500"
+                placeholder="Имя"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 text-gray-800 placeholder-gray-400"
+                required={mode === "register"}
               />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Введите Вашу профессию
-              </label>
               <input
-                required
-                value={prof}
-                onChange={(e) => setProf(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 text-gray-800 placeholder-gray-400"
+                className="w-full border rounded p-2 mb-3 text-black placeholder:text-gray-500"
+                placeholder="Профессия"
+                value={profession}
+                onChange={(e) => setProfession(e.target.value)}
               />
-            </div>
-            <Link href="/" className="block">
-              <button
-                type="submit"
-                disabled={!hasChanges}
-                className={
-                  !hasChanges
-                    ? "rounded-lg font-semibold text-lg w-full py-3 px-6 bg-gray-300 text-gray-500 cursor-not-allowed"
-                    : `w-full py-3 px-6 bg-gradient-to-r from-purple-500 to-blue-500 text-white rounded-lg font-semibold text-lg hover:from-purple-600 hover:to-blue-600 hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200`
-                }
-              >
-                Зарегистрироваться
-              </button>
-            </Link>
-          </form>
-        </div>
+            </>
+          )}
+
+          <input
+            className="w-full border rounded p-2 mb-3 text-black placeholder:text-gray-500"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+          <input
+            className="w-full border rounded p-2 mb-3 text-black placeholder:text-gray-500"
+            type="password"
+            placeholder="Пароль"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+
+          <button className="w-full bg-black text-white rounded p-2" type="submit">
+            {mode === "login" ? "Войти" : "Зарегистрироваться"}
+          </button>
+
+          <p className="w-full mt-2 text-sm text-gray-600 text-center">
+            {mode === "login"
+              ? "Нет аккаунта? Нажми кнопку «Регистрация» выше."
+              : "Уже есть аккаунт? Нажми кнопку «Вход» выше."}
+          </p>
+
+          {error && <p className="text-red-600 mt-3">{error}</p>}
+          {success && <p className="text-green-700 mt-3">{success}</p>}
+        </form>
       </div>
-    </article>
+    </main>
   );
 }

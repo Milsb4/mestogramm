@@ -5,17 +5,36 @@ import avatar from "../../../public/avatar.jpg";
 import Link from "next/link";
 import { Footer } from "@/components/layout/footer/Footer";
 import { useUserContext } from "@/utils/context/UserContext";
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { useToast } from "@/components/ui/toast/ToastProvider";
 
 export default function ProfilePage() {
-  const { profileInfo, changeProfileInfo } = useUserContext();
+  const { profileInfo, changeProfileInfo, changeAvatar } = useUserContext();
+  const { showToast } = useToast();
   const [newName, setNewName] = useState("");
   const [newProf, setNewProf] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isAvatarLoading, setIsAvatarLoading] = useState(false);
+  const avatarInputRef = useRef<HTMLInputElement>(null);
+
+  const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    try {
+      setIsAvatarLoading(true);
+      await changeAvatar(file);
+      showToast("Аватар обновлен", "success");
+    } catch (error: any) {
+      showToast(error?.message || "Не удалось обновить аватар", "error");
+    } finally {
+      setIsAvatarLoading(false);
+      if (avatarInputRef.current) avatarInputRef.current.value = "";
+    }
+  };
 
   const handleChange = async () => {
     if (!newName.trim() && !newProf.trim()) {
-      alert("Заполните хотя бы одно поле");
+      showToast("Заполните хотя бы одно поле", "info");
       return;
     }
 
@@ -29,10 +48,10 @@ export default function ProfilePage() {
 
       setNewName("");
       setNewProf("");
-      console.log("Профиль успешно обновлен!");
+      showToast("Профиль успешно обновлен", "success");
     } catch (error) {
       console.error("Ошибка при обновлении профиля:", error);
-      console.log("Ошибка при сохранении");
+      showToast("Чтобы изменить профиль, сначала войдите на /auth-page", "error");
     } finally {
       setIsLoading(false);
     }
@@ -58,13 +77,13 @@ export default function ProfilePage() {
           <div className="p-8 bg-gray-100">
             <div className="flex flex-col lg:flex-row items-center lg:items-start gap-12">
               <div className="flex flex-col items-center">
-                <div className="relative group">
+                <div className="relative group w-[200px] h-[200px] rounded-full overflow-hidden border-4 border-purple-200 shadow-lg transition-all duration-300 group-hover:border-purple-400 group-hover:scale-105">
                   <Image
                     alt="Аватар"
-                    src={avatar}
-                    width={200}
-                    height={200}
-                    className="rounded-full border-4 border-purple-200 shadow-lg transition-all duration-300 group-hover:border-purple-400 group-hover:scale-105"
+                    src={profileInfo.avatarUrl || avatar}
+                    fill
+                    sizes="200px"
+                    className="object-cover"
                   />
                   <div className="absolute inset-0 bg-purple-500 bg-opacity-0 group-hover:bg-opacity-10 rounded-full transition-all duration-300" />
                 </div>
@@ -73,6 +92,21 @@ export default function ProfilePage() {
                     {profileInfo.name}
                   </h3>
                   <p className="text-gray-600 mt-2">{profileInfo.profession}</p>
+                  <input
+                    ref={avatarInputRef}
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={handleAvatarChange}
+                  />
+                  <button
+                    type="button"
+                    disabled={isAvatarLoading}
+                    onClick={() => avatarInputRef.current?.click()}
+                    className="mt-3 px-4 py-2 text-sm rounded-lg bg-gradient-to-r from-purple-500 to-blue-500 text-white disabled:opacity-50"
+                  >
+                    {isAvatarLoading ? "Загрузка..." : "Изменить аватар"}
+                  </button>
                 </div>
               </div>
 

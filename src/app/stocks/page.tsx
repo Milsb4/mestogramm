@@ -3,7 +3,7 @@ import { Header } from "@/components/layout/header";
 import { CardList } from "@/components/layout/List/CardLIst";
 import { CardProvider } from "@/utils/context/CardContext";
 
-export function Stocks() {
+export default function Stocks() {
   return (
     <CardProvider>
       <div className="flex flex-col gap-5">
@@ -13,4 +13,4 @@ export function Stocks() {
       </div>
     </CardProvider>
   );
-};
+}

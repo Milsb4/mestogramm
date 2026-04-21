@@ -3,6 +3,8 @@ export interface Comment {
   text: string;
   createdAt: Date;
   ownerCommentID: string;
+  ownerName?: string;
+  ownerAvatarUrl?: string;
 }
 
 export interface CardData {

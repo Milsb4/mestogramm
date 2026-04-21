@@ -15,6 +15,7 @@ export const CardList = () => {
         card={card} 
         onAddComment={addComment} // Используем функцию из контекста
         onDeleteComment={deleteComment} // Используем функцию из контекста
+        onDeleteCard={deleteCard}
       />
     );
   };

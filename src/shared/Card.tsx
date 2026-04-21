@@ -4,20 +4,26 @@ import { CardData } from "./types";
 import { LikeButton } from "@/components/ui/Like-button/LikeButton";
 import { useState } from "react";
 import OpenCardModal from "@/components/forms/OpenCardModal/OpenCardModal";
+import { useUserContext } from "@/utils/context/UserContext";
+import { useToast } from "@/components/ui/toast/ToastProvider";
 
 interface CardProps {
   card: CardData;
-  onAddComment: (cardId: string, commentText: string) => void;
-  onDeleteComment?: (cardId: string, commentId: string) => void;
+  onAddComment: (cardId: string, commentText: string) => Promise<void>;
+  onDeleteComment?: (cardId: string, commentId: string) => Promise<void>;
+  onDeleteCard?: (cardId: string) => Promise<void>;
 }
 
-export const Card: React.FC<CardProps> = ({ card, onAddComment, onDeleteComment }) => {
+export const Card: React.FC<CardProps> = ({ card, onAddComment, onDeleteComment, onDeleteCard }) => {
+  const { profileInfo, isAuth } = useUserContext();
+  const { showToast } = useToast();
   const [showModal, setShowModal] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
+  const [imageSrc, setImageSrc] = useState(card.url);
   
 
-  const handleAddComment = (commentText: string) => {
-    onAddComment(card.id, commentText);
+  const handleAddComment = async (commentText: string) => {
+    await onAddComment(card.id, commentText);
   };
 
   const handleImageLoad = () => {
@@ -25,10 +31,13 @@ export const Card: React.FC<CardProps> = ({ card, onAddComment, onDeleteComment 
   };
 
   const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
-    console.error('Error loading image:', card.url);
-    const target = e.target as HTMLImageElement;
-    target.style.display = 'none';
+    if (imageSrc !== "/avatar.jpg") {
+      setImageSrc("/avatar.jpg");
+      setImageLoaded(false);
+    }
   };
+
+  const canDelete = isAuth && String(profileInfo.id) === card.ownerCardId;
 
   return (
     <>
@@ -41,9 +50,25 @@ export const Card: React.FC<CardProps> = ({ card, onAddComment, onDeleteComment 
           className="cursor-pointer w-full h-[200px] relative bg-gray-100 overflow-hidden"
           onClick={() => setShowModal(true)}
         >
+          {onDeleteCard && canDelete && (
+            <button
+              type="button"
+              className="absolute top-2 left-2 z-20 bg-black/70 text-white rounded px-2 py-1 text-xs"
+              onClick={async (e) => {
+                e.stopPropagation();
+                try {
+                  await onDeleteCard(card.id);
+                } catch (error: any) {
+                  showToast(error?.message || "Не удалось удалить карточку", "error");
+                }
+              }}
+            >
+              Удалить
+            </button>
+          )}
           <Image
             alt={card.title}
-            src={card.url}
+            src={imageSrc}
             fill
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             className={`
@@ -75,7 +100,7 @@ export const Card: React.FC<CardProps> = ({ card, onAddComment, onDeleteComment 
           <h3 className="text-black font-inter-medium text-sm leading-tight line-clamp-2 flex-1 mr-2">
             {card.title}
           </h3> 
-          <LikeButton />
+          <LikeButton cardId={card.id} />
         </div>
       </li>
 

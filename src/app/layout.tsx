@@ -7,6 +7,7 @@ import icon from "../../public/icon.svg";
 import "./globals.css";
 
 import { UserProvider } from "@/utils/context/UserContext";
+import { ToastProvider } from "@/components/ui/toast/ToastProvider";
 
 
 export const metadata: Metadata = {
@@ -32,10 +33,12 @@ export default function RootLayout({
         />
       </head>
       <body className={interRegular.className}>
-        <UserProvider>
-          {children}
-          <BootstrapClient />
-        </UserProvider>
+        <ToastProvider>
+          <UserProvider>
+            {children}
+            <BootstrapClient />
+          </UserProvider>
+        </ToastProvider>
       </body>
     </html>
   );
