@@ -6,6 +6,7 @@ import { useState } from "react";
 import OpenCardModal from "@/components/forms/OpenCardModal/OpenCardModal";
 import { useUserContext } from "@/utils/context/UserContext";
 import { useToast } from "@/components/ui/toast/ToastProvider";
+import deleteIcon from "../../public/delete-icon.svg";
 
 interface CardProps {
   card: CardData;
@@ -53,7 +54,7 @@ export const Card: React.FC<CardProps> = ({ card, onAddComment, onDeleteComment,
           {onDeleteCard && canDelete && (
             <button
               type="button"
-              className="absolute top-2 left-2 z-20 bg-black/70 text-white rounded px-2 py-1 text-xs"
+              className="absolute top-2 left-2 z-20 bg-black/70 text-white rounded p-2"
               onClick={async (e) => {
                 e.stopPropagation();
                 try {
@@ -62,8 +63,10 @@ export const Card: React.FC<CardProps> = ({ card, onAddComment, onDeleteComment,
                   showToast(error?.message || "Не удалось удалить карточку", "error");
                 }
               }}
+              aria-label="Удалить карточку"
+              title="Удалить"
             >
-              Удалить
+              <Image src={deleteIcon} alt="Удалить" width={12} height={12} />
             </button>
           )}
           <Image

@@ -2,6 +2,7 @@
 import { CardData } from "@/shared/types"; 
 import { useState, useEffect, useRef } from "react";
 import { useToast } from "@/components/ui/toast/ToastProvider";
+import { useUserContext } from "@/utils/context/UserContext";
 
 interface OpenCardModalProps {
   card: CardData;
@@ -17,6 +18,7 @@ export default function OpenCardModal({
   onDeleteComment 
 }: OpenCardModalProps) {
   const { showToast } = useToast();
+  const { profileInfo, isAuth } = useUserContext();
   const [commentText, setCommentText] = useState("");
   const [modalImageSrc, setModalImageSrc] = useState(card.url);
   const commentsEndRef = useRef<HTMLDivElement>(null);
@@ -136,7 +138,7 @@ export default function OpenCardModal({
                           <small className="text-muted">
                             {formatDate(comment.createdAt)}
                           </small>
-                          {onDeleteComment && (
+                          {onDeleteComment && isAuth && String(profileInfo.id) === String(comment.ownerCommentID) && (
                             <button 
                               className="btn btn-sm btn-outline-danger"
                               onClick={() => handleDeleteComment(comment.id)}

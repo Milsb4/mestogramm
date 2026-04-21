@@ -6,10 +6,12 @@ import edit from "../../../../public/edit-icon-black.svg";
 import Image from "next/image";
 import { useUserContext } from "@/utils/context/UserContext";
 import { useCardContext } from "@/utils/context/CardContext";
+import { useToast } from "@/components/ui/toast/ToastProvider";
 
 export const Profile = () => {
   const { profileInfo, isAuth } = useUserContext();
   const { likedCardIds } = useCardContext();
+  const { showToast } = useToast();
   
   return (
     <div className="flex items-center gap-6 p-6 bg-white rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition-all duration-300 max-w-2xl ml-8">
@@ -54,19 +56,38 @@ export const Profile = () => {
       </div>
 
       {/* Кнопка редактирования */}
-      <Link 
-        href="/profile-page"
-        className="flex items-center justify-center w-12 h-12 hover:bg-blue-50 border border-gray-200 hover:border-blue-200 rounded-xl transition-all duration-300 group/edit"
-      >
-        <Image
-          alt="Редактировать профиль"
-          src={edit}
-          width={20}
-          height={20}
-          className="opacity-60  group-hover/edit:opacity-80 group-hover/edit:scale-110 transition-all duration-300"
-        />
-        <span className="sr-only">Редактировать профиль</span>
-      </Link>
+      {isAuth ? (
+        <Link 
+          href="/profile-page"
+          className="flex items-center justify-center w-12 h-12 hover:bg-blue-50 border border-gray-200 hover:border-blue-200 rounded-xl transition-all duration-300 group/edit"
+        >
+          <Image
+            alt="Редактировать профиль"
+            src={edit}
+            width={20}
+            height={20}
+            className="opacity-60  group-hover/edit:opacity-80 group-hover/edit:scale-110 transition-all duration-300"
+          />
+          <span className="sr-only">Редактировать профиль</span>
+        </Link>
+      ) : (
+        <button
+          type="button"
+          disabled
+          onClick={() => showToast("Чтобы редактировать профиль, войдите на /auth-page", "info")}
+          className="flex items-center justify-center w-12 h-12 border border-gray-200 rounded-xl opacity-50 cursor-not-allowed"
+          aria-label="Редактировать профиль (нужен вход)"
+          title="Нужен вход"
+        >
+          <Image
+            alt="Редактировать профиль"
+            src={edit}
+            width={20}
+            height={20}
+            className="opacity-60"
+          />
+        </button>
+      )}
     </div>
   );
 };
